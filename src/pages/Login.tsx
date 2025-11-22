@@ -3,114 +3,72 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Bus } from "lucide-react";
 import { toast } from "sonner";
 
-type UserRole = "admin" | "driver" | "cashier" | "ministry";
-
-const Login = () => {
-  const [email, setEmail] = useState("");
+export default function Login() {
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState<UserRole>("admin");
   const navigate = useNavigate();
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Simple demo login - in production, this would be actual authentication
-    if (email && password) {
-      localStorage.setItem("userRole", role);
-      localStorage.setItem("isAuthenticated", "true");
-      
+    // Simple validation for demo
+    if (username && password) {
       toast.success("Login successful!");
-      
-      // Navigate based on role
-      switch (role) {
-        case "admin":
-          navigate("/admin");
-          break;
-        case "driver":
-          navigate("/driver");
-          break;
-        case "cashier":
-          navigate("/cashier");
-          break;
-        case "ministry":
-          navigate("/ministry");
-          break;
-      }
+      navigate("/dashboard");
     } else {
-      toast.error("Please enter your credentials");
+      toast.error("Please enter username and password");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary/5 via-background to-accent/10 p-4">
-      <Card className="w-full max-w-md shadow-lg border-border/50">
+    <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/10 p-4">
+      <Card className="w-full max-w-md">
         <CardHeader className="space-y-1 text-center">
-          <div className="mx-auto w-16 h-16 bg-primary rounded-2xl flex items-center justify-center mb-4">
-            <Bus className="w-8 h-8 text-primary-foreground" />
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary">
+            <Bus className="h-8 w-8 text-primary-foreground" />
           </div>
-          <CardTitle className="text-2xl font-bold">TTQDFMS</CardTitle>
-          <CardDescription>Transport & Traffic Queue Digital Fleet Management</CardDescription>
+          <CardTitle className="text-2xl font-bold">Station Manager</CardTitle>
+          <CardDescription>Sign in to manage your station operations</CardDescription>
         </CardHeader>
-        <CardContent>
-          <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin}>
+          <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="role">Login As</Label>
-              <Select value={role} onValueChange={(value) => setRole(value as UserRole)}>
-                <SelectTrigger id="role">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="admin">Admin / Station Manager</SelectItem>
-                  <SelectItem value="driver">Driver</SelectItem>
-                  <SelectItem value="cashier">Cashier / Ticket Collector</SelectItem>
-                  <SelectItem value="ministry">Ministry / Oversight</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="username">Username</Label>
               <Input
-                id="email"
-                type="email"
-                placeholder="user@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                type="text"
+                placeholder="Enter your username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
               />
             </div>
-
             <div className="space-y-2">
               <Label htmlFor="password">Password</Label>
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
             </div>
-
+          </CardContent>
+          <CardFooter className="flex flex-col gap-4">
             <Button type="submit" className="w-full">
               Sign In
             </Button>
-
-            <div className="text-center">
-              <a href="#" className="text-sm text-muted-foreground hover:text-primary transition-colors">
-                Forgot password?
-              </a>
-            </div>
-          </form>
-        </CardContent>
+            <Button type="button" variant="ghost" className="w-full text-sm">
+              Forgot password?
+            </Button>
+          </CardFooter>
+        </form>
       </Card>
     </div>
   );
-};
-
-export default Login;
+}
