@@ -4,23 +4,28 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { Bus } from "lucide-react";
+import { Bus, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { authService } from "@/services/auth.service";
 
 export default function Login() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Simple validation for demo
-    if (username && password) {
+    setIsLoading(true);
+
+    try {
+      await authService.login({ username, password });
       toast.success("Login successful!");
       navigate("/dashboard");
-    } else {
-      toast.error("Please enter username and password");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Login failed");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -60,7 +65,8 @@ export default function Login() {
             </div>
           </CardContent>
           <CardFooter className="flex flex-col gap-4">
-            <Button type="submit" className="w-full">
+            <Button type="submit" className="w-full" disabled={isLoading}>
+              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Sign In
             </Button>
             <Button type="button" variant="ghost" className="w-full text-sm">
